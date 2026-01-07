@@ -8,7 +8,7 @@ export default defineConfig({
   publicDir: 'public',
 
   build: {
-    outDir: 'dist/client',
+    outDir: 'dist',
     emptyOutDir: true,
     sourcemap: true,
     rollupOptions: {
