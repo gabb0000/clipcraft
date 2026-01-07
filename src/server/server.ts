@@ -20,9 +20,19 @@ const app = express();
 // Configuration
 const PORT = parseInt(process.env.PORT || '3000');
 const DOWNLOAD_DIR = path.join(__dirname, '../../downloads');
-const YTDLP_PATH = process.env.YTDLP_PATH ||
-  process.env.LOCALAPPDATA + '\\Microsoft\\WinGet\\Packages\\yt-dlp.yt-dlp_Microsoft.Winget.Source_8wekyb3d8bbwe\\yt-dlp.exe';
-const FFMPEG_PATH = process.env.FFMPEG_PATH || path.join(__dirname, '../../ffmpeg.exe');
+
+// Platform-specific paths for yt-dlp and FFmpeg
+const isWindows = process.platform === 'win32';
+const YTDLP_PATH = process.env.YTDLP_PATH || (
+  isWindows
+    ? process.env.LOCALAPPDATA + '\\Microsoft\\WinGet\\Packages\\yt-dlp.yt-dlp_Microsoft.Winget.Source_8wekyb3d8bbwe\\yt-dlp.exe'
+    : '/usr/local/bin/yt-dlp'  // Linux/Render path
+);
+const FFMPEG_PATH = process.env.FFMPEG_PATH || (
+  isWindows
+    ? path.join(__dirname, '../../ffmpeg.exe')
+    : 'ffmpeg'  // Use system FFmpeg on Linux
+);
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 // Validate configuration
@@ -39,6 +49,10 @@ if (!fs.existsSync(DOWNLOAD_DIR)) {
 app.use(cors());
 app.use(express.json());
 app.use('/downloads', express.static(DOWNLOAD_DIR));
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname, '../../')));
+app.use('/dist', express.static(path.join(__dirname, '../../dist')));
 
 // ============================================
 // Types
@@ -497,6 +511,11 @@ app.delete('/file/:filename', (req: Request, res: Response) => {
 // ============================================
 // Error Handling
 // ============================================
+
+// Serve index.html for root route
+app.get('/', (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../../index.html'));
+});
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Server error:', err);

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: clipcraft
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: bash render-build.sh
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: PORT
+        value: 3000
+      - key: GROQ_API_KEY
+        sync: false
+    disk:
+      name: clipcraft-storage
+      mountPath: /opt/render/project/src/downloads
+      sizeGB: 1
