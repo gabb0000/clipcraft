@@ -3,7 +3,7 @@
  * Interactive caption editing with timing adjustments
  */
 
-import type { Caption, CaptionWord, CaptionStyle } from '@types/index';
+import type { Caption } from '@types/index';
 import { Utils } from './utils';
 
 export class CaptionEditor {

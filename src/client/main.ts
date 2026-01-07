@@ -5,8 +5,6 @@
 
 import type {
   AppState,
-  CurrentClipState,
-  Caption,
   HighlightSuggestion,
   VideoFilter,
   CaptionStyle,

@@ -3,7 +3,7 @@
  * Handles exporting clips in multiple formats and aspect ratios
  */
 
-import type { ExportOptions, ExportFormat, AspectRatio, Caption } from '@types/index';
+import type { ExportOptions, AspectRatio, Caption } from '@types/index';
 import { Utils } from './utils';
 import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 
