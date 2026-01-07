@@ -187,8 +187,8 @@ export class VideoLoader {
   async extractClip(
     startTime: number,
     endTime: number,
-    includeCaptions = false,
-    captions: Caption[] = []
+    _includeCaptions = false,
+    _captions: Caption[] = []
   ): Promise<Blob> {
     // Use server-side FFmpeg for proper audio extraction
     const serverUrl = '/api/clip';
@@ -240,7 +240,7 @@ export class VideoLoader {
         return;
       }
 
-      const stream = this.videoElement.captureStream();
+      const stream = (this.videoElement as any).captureStream();
 
       const mimeType = 'video/webm';
       const mediaRecorder = new MediaRecorder(stream, {

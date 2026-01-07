@@ -100,8 +100,6 @@ export class VideoExporter {
     endTime: number,
     options: ExportOptions
   ): Promise<Blob> {
-    const aspectRatio = this.parseAspectRatio(options.aspectRatio);
-
     // Check if server is available for proper encoding
     const serverAvailable = await this.checkServerAvailable();
 

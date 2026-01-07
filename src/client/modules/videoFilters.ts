@@ -3,7 +3,7 @@
  * WebGL-based real-time video filters
  */
 
-import type { VideoFilter, FilterType, FilterPreset } from '@types/index';
+import type { VideoFilter, FilterPreset } from '@types/index';
 
 export class VideoFilterEngine {
   private canvas: HTMLCanvasElement;

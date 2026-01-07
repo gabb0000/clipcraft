@@ -169,6 +169,7 @@ export interface ExportOptions {
   aspectRatio: AspectRatio;
   quality: 'low' | 'medium' | 'high';
   includeCaptions: boolean;
+  captions?: Caption[];
   captionStyle?: CaptionStyle;
   filters?: VideoFilter[];
 }
