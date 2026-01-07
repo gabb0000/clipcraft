@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered video clipping tool for creating TikTok and Instagram content">
+    <title>ClipCraft - AI Video Clipping Tool</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- CRT & Noise Overlays -->
+    <div class="crt-overlay"></div>
+    <div class="noise-overlay"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="logo-text">ClipCraft</span>
+        </div>
+        <nav class="header-nav">
+            <button class="nav-btn active" data-view="home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Home
+            </button>
+            <button class="nav-btn" data-view="edit" id="editNavBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Edit
+            </button>
+            <button class="nav-btn" data-view="gallery">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                My Clips
+            </button>
+        </nav>
+        <button class="settings-btn" id="settingsBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <circle cx="12" cy="12" r="3" />
+            </svg>
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home View (Upload/Paste URL) -->
+        <section class="home-view active" id="homeView">
+            <!-- Input Section -->
+            <div class="url-input-container">
+                <div class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                </div>
+                <input type="text" class="url-input" id="urlInput" placeholder="Paste YouTube or Twitch VOD URL...">
+                <button class="load-btn" id="loadUrlBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    Load
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                </div>
+                <p class="upload-text">Drag & drop video files here</p>
+                <p class="upload-subtext">or click to browse • MP4, WebM, MOV</p>
+                <input type="file" id="fileInput" accept="video/*" hidden>
+            </div>
+
+            <!-- Download Progress Panel -->
+            <div class="download-progress-panel hidden" id="downloadProgressPanel">
+                <div class="download-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Download Progress</span>
+                </div>
+                <div class="download-info">
+                    <span class="download-title" id="downloadTitle">Preparing...</span>
+                    <span class="download-percent" id="downloadPercent">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="downloadProgressBar"></div>
+                </div>
+                <div class="download-queue" id="downloadQueue"></div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Edit View (Video Editing Workspace) -->
+        <section class="edit-view" id="editView">
+            <!-- Video Editor Panel -->
+            <div class="editor-panel" id="editorPanel">
+                <div class="editor-grid">
+                    <!-- Video Preview -->
+                    <div class="preview-container">
+                        <div class="video-wrapper">
+                            <video id="mainVideo" playsinline></video>
+                            <div class="title-overlay" id="titleOverlay"></div>
+                            <div class="caption-overlay" id="captionOverlay"></div>
+                            <div class="video-controls">
+                                <button class="control-btn" id="playPauseBtn">
+                                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8 5v14l11-7z" />
+                                    </svg>
+                                    <svg class="pause-icon hidden" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                                    </svg>
+                                </button>
+                                <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                                <button class="control-btn" id="muteBtn">
+                                    <svg class="volume-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Clip Title & Duration -->
+                        <div class="duration-selector">
+                            <input type="text" id="clipTitle" class="title-input" placeholder="Enter clip title... 🎬">
+                            <span class="duration-label">Duration:</span>
+                            <button class="duration-btn active" data-duration="30">30s</button>
+                            <button class="duration-btn" data-duration="60">60s</button>
+                        </div>
+                    </div>
+
+                    <!-- Timeline & Controls -->
+                    <div class="timeline-container">
+                        <div class="waveform-container" id="waveformContainer">
+                            <canvas id="waveformCanvas"></canvas>
+                            <div class="clip-range" id="clipRange">
+                                <div class="range-handle start" id="rangeStart"></div>
+                                <div class="range-handle end" id="rangeEnd"></div>
+                            </div>
+                            <div class="playhead" id="playhead"></div>
+                            <div class="ai-markers" id="aiMarkers"></div>
+                        </div>
+
+                        <div class="timeline-controls">
+                            <button class="action-btn" id="analyzeBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                                AI Analyze
+                            </button>
+                            <button class="action-btn" id="generateCaptionsBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                </svg>
+                                Generate Captions
+                            </button>
+                            <button class="action-btn primary" id="previewClipBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                Preview Clip
+                            </button>
+                        </div>
+
+                        <!-- Caption Settings -->
+                        <div class="caption-settings">
+                            <span class="settings-label">Caption Style:</span>
+                            <select id="captionSize" class="settings-select">
+                                <option value="0.7">Small</option>
+                                <option value="0.9" selected>Medium</option>
+                                <option value="1.2">Large</option>
+                            </select>
+                            <select id="captionFont" class="settings-select">
+                                <option value="Inter">Inter</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Impact">Impact</option>
+                                <option value="Comic Sans MS">Comic Sans</option>
+                            </select>
+                            <select id="captionPosition" class="settings-select">
+                                <option value="top">Top</option>
+                                <option value="middle">Middle</option>
+                                <option value="bottom" selected>Bottom</option>
+                            </select>
+                            <select id="captionAnimation" class="settings-select">
+                                <option value="none" selected>No Animation</option>
+                                <option value="fade">Fade</option>
+                                <option value="slide">Slide</option>
+                                <option value="bounce">Bounce</option>
+                            </select>
+                            <input type="color" id="captionColor" value="#ffffff" class="color-picker"
+                                title="Text Color">
+                            <input type="color" id="captionHighlight" value="#3b82f6" class="color-picker"
+                                title="Highlight Color">
+                            <button class="action-btn" id="openCaptionEditorBtn" title="Open Caption Editor">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                            </button>
+                        </div>
+
+                        <!-- Video Filters & Export -->
+                        <div class="filters-export-container">
+                            <div class="filters-panel">
+                                <h4 class="panel-subtitle">Video Filters</h4>
+                                <div class="filter-presets">
+                                    <button class="preset-btn active" data-preset="none">Original</button>
+                                    <button class="preset-btn" data-preset="vibrant">Vibrant</button>
+                                    <button class="preset-btn" data-preset="cinematic">Cinematic</button>
+                                    <button class="preset-btn" data-preset="bw">B&W</button>
+                                    <button class="preset-btn" data-preset="vintage">Vintage</button>
+                                    <button class="preset-btn" data-preset="airy">Bright & Airy</button>
+                                </div>
+                                <div class="filter-controls">
+                                    <div class="filter-control">
+                                        <label>Brightness</label>
+                                        <input type="range" id="filterBrightness" min="0" max="100" value="50" class="filter-slider">
+                                        <span class="filter-value">0</span>
+                                    </div>
+                                    <div class="filter-control">
+                                        <label>Contrast</label>
+                                        <input type="range" id="filterContrast" min="0" max="100" value="50" class="filter-slider">
+                                        <span class="filter-value">50</span>
+                                    </div>
+                                    <div class="filter-control">
+                                        <label>Saturation</label>
+                                        <input type="range" id="filterSaturation" min="0" max="100" value="50" class="filter-slider">
+                                        <span class="filter-value">50</span>
+                                    </div>
+                                    <div class="filter-control">
+                                        <label>Exposure</label>
+                                        <input type="range" id="filterExposure" min="0" max="100" value="50" class="filter-slider">
+                                        <span class="filter-value">0</span>
+                                    </div>
+                                    <div class="filter-control">
+                                        <label>Temperature</label>
+                                        <input type="range" id="filterTemperature" min="0" max="100" value="50" class="filter-slider">
+                                        <span class="filter-value">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="export-panel">
+                                <h4 class="panel-subtitle">Export Settings</h4>
+                                <div class="export-options">
+                                    <div class="option-group">
+                                        <label>Aspect Ratio:</label>
+                                        <select id="aspectRatio" class="settings-select">
+                                            <option value="16:9" selected>16:9 (YouTube)</option>
+                                            <option value="9:16">9:16 (TikTok/Reels)</option>
+                                            <option value="1:1">1:1 (Instagram Square)</option>
+                                            <option value="4:5">4:5 (Instagram Feed)</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-group">
+                                        <label>Format:</label>
+                                        <select id="exportFormat" class="settings-select">
+                                            <option value="mp4" selected>MP4</option>
+                                            <option value="webm">WebM</option>
+                                            <option value="gif">GIF</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-group">
+                                        <label>Quality:</label>
+                                        <select id="exportQuality" class="settings-select">
+                                            <option value="low">Low</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="high">High</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Suggestions -->
+                    <div class="suggestions-panel">
+                        <h3 class="panel-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            AI Suggested Clips
+                        </h3>
+                        <div class="suggestions-list" id="suggestionsList">
+                            <div class="empty-state">
+                                <p>Click "AI Analyze" to find highlight moments</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery View -->
+        <section class="gallery-view" id="galleryView">
+            <div class="gallery-header">
+                <h2 class="gallery-title">Saved Clips</h2>
+                <span class="clip-count" id="clipCount">0 clips</span>
+            </div>
+            <div class="clips-grid" id="clipsGrid">
+                <div class="empty-gallery">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    <p>No clips saved yet</p>
+                    <span>Create clips in the editor to see them here</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Preview Modal -->
+    <div class="modal-overlay hidden" id="previewModal">
+        <div class="modal-content preview-modal">
+            <div class="modal-header">
+                <h3>Clip Preview</h3>
+                <button class="close-btn" id="closePreviewBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="preview-video-container">
+                <video id="previewVideo" playsinline></video>
+                <div class="caption-overlay" id="previewCaptionOverlay"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="discardClipBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Discard
+                </button>
+                <button class="modal-btn primary" id="saveClipBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Clip
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clip Detail Modal -->
+    <div class="modal-overlay hidden" id="clipDetailModal">
+        <div class="modal-content clip-detail-modal">
+            <div class="modal-header">
+                <h3 id="clipDetailTitle">Clip Details</h3>
+                <button class="close-btn" id="closeDetailBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="clip-detail-video">
+                <video id="clipDetailVideo" playsinline controls></video>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn danger" id="deleteClipBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
+                </button>
+                <button class="modal-btn primary" id="downloadClipBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caption Editor Modal -->
+    <div class="modal-overlay hidden" id="captionEditorModal">
+        <div class="modal-content caption-editor-modal">
+            <div class="modal-header">
+                <h3>Caption Editor</h3>
+                <button class="close-btn" id="closeCaptionEditorBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="captionEditorContainer" class="caption-editor-container">
+                <!-- Caption editor UI will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text" id="loadingText">Processing...</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="/src/client/main.ts"></script>
+</body>
+
+</html>
